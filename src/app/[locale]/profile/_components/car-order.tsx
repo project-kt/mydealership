@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { QueryData, QueryError } from "@supabase/supabase-js";
+import { Badge, Table } from "@radix-ui/themes";
 import { Tables } from "../../../../../types/database.types";
 import { Database } from "../../../../../types/supabase";
 import RetrieveSessionButton from "./retrieve-session-button";
@@ -32,13 +33,14 @@ export default function CarOrder({ carOrder }: CarOrderProps): ReactElement | un
 
   if (car) {
     return (
-      <div>
-        <h3>{car.title}</h3>
-        <p>{carOrder.plan}</p>
-        <p>{carOrder.price}</p>
-        <h3>{carOrder.status}</h3>
-        {carOrder.status === "open" && <RetrieveSessionButton carOrder={carOrder} />}
-      </div>
+      <Table.Row>
+        <Table.RowHeaderCell>{car.title}</Table.RowHeaderCell>
+        <Table.Cell>{carOrder.plan}</Table.Cell>
+        <Table.Cell>
+          <Badge color="orange">{carOrder.status}</Badge>
+        </Table.Cell>
+        <Table.Cell>{carOrder.status === "open" && <RetrieveSessionButton carOrder={carOrder} />}</Table.Cell>
+      </Table.Row>
     );
   }
 }

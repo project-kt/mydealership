@@ -34,5 +34,9 @@ export default function RetrieveSessionButton({ carOrder }: { carOrder: Tables<"
     }
   };
 
-  return <Button onClick={handleRetriveSession}>Retrieve stripe session</Button>;
+  return (
+    <Button onClick={handleRetriveSession} size="1" variant="soft" className="cursor-pointer">
+      Retrieve stripe session
+    </Button>
+  );
 }

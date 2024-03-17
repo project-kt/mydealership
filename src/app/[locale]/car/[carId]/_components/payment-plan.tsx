@@ -1,7 +1,8 @@
-import { Button } from "@radix-ui/themes";
+import { Button, Callout, Card, Link, Text } from "@radix-ui/themes";
 import axios, { AxiosResponse } from "axios";
 import { ReactElement, useState } from "react";
 import Stripe from "stripe";
+import { Check } from "lucide-react";
 import { StripePaymentPlan } from "@/app/api/stripe/payment-plans/route";
 import { StripeCheckoutData } from "@/interfaces/stripe-checkout-data";
 import { useUserSessionStore } from "@/stores/session-store";
@@ -88,17 +89,30 @@ const PaymentPlan = ({ car, carOrder, paymentPlan }: PaymentPlanProps): ReactEle
   };
 
   return (
-    <div>
-      <Button key={paymentPlan.id} value={paymentPlan.id} onClick={handleBuyPlan}>
-        {paymentPlan.product.name}
-      </Button>
-      {isOpen && (
-        <>
-          <p>Car order created</p>
-          <Button onClick={handleClickProfile}>Go to profile</Button>
-          <Button onClick={handleBuyNow}>Buy now</Button>
-        </>
-      )}
+    <div className="w-full">
+      <Card className="text-center">
+        <Text as="div" size="5" weight="bold">
+          {paymentPlan.product.name}
+        </Text>
+        <Text as="div" color="gray" size="2" className="my-3 flex items-center justify-center">
+          <Check size={15} className="mr-1" /> Start building your
+        </Text>
+        <Button key={paymentPlan.id} value={paymentPlan.id} onClick={handleBuyPlan} className="w-full cursor-pointer">
+          Request order Now
+        </Button>
+        {isOpen && (
+          <Callout.Root className="mt-3">
+            <Callout.Icon></Callout.Icon>
+            <Callout.Text>
+              Order has been created.
+              <div className="flex flex-wrap gap-x-3">
+                <Link onClick={handleClickProfile}>Visit profile</Link>
+                <Link onClick={handleBuyNow}>Proced to payment</Link>
+              </div>
+            </Callout.Text>
+          </Callout.Root>
+        )}
+      </Card>
     </div>
   );
 };
