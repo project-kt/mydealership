@@ -9,31 +9,37 @@ My Dealership is a comprehensive automotive marketplace platform that enables us
 ## Features
 
 ### Vehicle Management
+
 - **Advanced Search & Filtering**: Filter cars by manufacturer, category, price range, year, horsepower, torque, mileage, fuel efficiency, engine type, transmission, fuel type, and status
 - **Detailed Vehicle Pages**: Comprehensive vehicle information with specifications and images
 - **Real-time Inventory**: Dynamic vehicle listings with status tracking (Coming soon, On sale, Sold, In process)
 
 ### User Authentication
+
 - **Secure Registration**: Email and password-based user registration with bcrypt password hashing
 - **Session Management**: JWT-based authentication with NextAuth.js
 - **Protected Routes**: Secure access control for authenticated features
 
 ### Shopping & Checkout
+
 - **Car Orders**: Complete order management system for vehicle purchases
 - **Payment Processing**: Integrated payment handling with session tracking
 - **Order History**: Track user purchases and order status
 
 ### Internationalization
+
 - **Multi-language Support**: Full English and Italian translations
 - **Locale-aware Routing**: Automatic language detection and routing
 
 ### System Monitoring
+
 - **Health Checks**: Automated crontab system monitoring
 - **Email Notifications**: Automated email alerts for database connectivity and system status
 
 ## Technologies
 
 ### Frontend
+
 - **[Next.js 14+](https://nextjs.org/)** - React framework with App Router
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 - **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
@@ -41,18 +47,22 @@ My Dealership is a comprehensive automotive marketplace platform that enables us
 - **[React Hook Form](https://react-hook-form.com/)** - Form validation and management
 
 ### Backend
+
 - **[PostgreSQL](https://www.postgresql.org/)** - Relational database
 - **[node-postgres (pg)](https://node-postgres.com/)** - PostgreSQL client for Node.js
 - **[NextAuth.js](https://next-auth.js.org/)** - Authentication solution
 
 ### Validation & Security
+
 - **[Zod](https://zod.dev/)** - TypeScript-first schema validation
 - **[bcryptjs](https://github.com/dcodeIO/bcrypt.js)** - Password hashing
 
 ### Internationalization
+
 - **[next-intl](https://next-intl-docs.vercel.app/)** - Internationalization for Next.js
 
 ### Email
+
 - **[Nodemailer](https://nodemailer.com/)** - Email sending
 
 ## Getting Started
@@ -102,6 +112,7 @@ pnpm dev
 ### Database Setup
 
 The application uses PostgreSQL with the following main tables:
+
 - `Car` - Vehicle inventory
 - `Category` - Vehicle categories
 - `Manufacturer` - Car manufacturers
