@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { StripeCheckoutData } from "@/interfaces/stripe-checkout-data";
-import { supabaseFn } from "@/utils/supabase-functions";
+import { dbFunctions } from "@/db/functions";
 
 export const POST = async (req: Request) => {
   const reqData: StripeCheckoutData = await req.json();
@@ -9,7 +9,7 @@ export const POST = async (req: Request) => {
   const stripeSession = await createStripeSession(reqData, referer);
 
   if (stripeSession.id) {
-    const carPayment = await supabaseFn.payment.create({
+    const carPayment = await dbFunctions.payment.create({
       carId: reqData.carOrder.carId,
       userId: reqData.carOrder.userId,
       sessionId: stripeSession.id,
@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
     });
 
     if (carPayment && carPayment.length > 0) {
-      const carOrder = await supabaseFn.carOrder.update(
+      const carOrder = await dbFunctions.carOrder.update(
         {
           sessionId: stripeSession.id,
           expiredAt: new Date(stripeSession.expires_at * 1000).toISOString(),

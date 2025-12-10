@@ -1,7 +1,6 @@
-import { QueryError } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import Stripe from "stripe";
-import { supabaseFn } from "@/utils/supabase-functions";
+import { dbFunctions } from "@/db/functions";
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -17,9 +16,9 @@ export async function POST(req: Request) {
         case "checkout.session.completed":
           const checkoutSession = event.data.object;
 
-          let error: QueryError | null = null;
+          let error: any = null;
 
-          error = await supabaseFn.payment.updateBySessionId(
+          error = await dbFunctions.payment.updateBySessionId(
             {
               method: checkoutSession.payment_method_types[0],
               status: checkoutSession.payment_status,
@@ -33,7 +32,7 @@ export async function POST(req: Request) {
             checkoutSession.id,
           );
 
-          error = await supabaseFn.carOrder.updateBySessionId(
+          error = await dbFunctions.carOrder.updateBySessionId(
             {
               status: checkoutSession.status ?? "open",
               updatedAt: new Date().toISOString(),

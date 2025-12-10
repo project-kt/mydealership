@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import { produce } from "immer";
-import { User } from "@supabase/supabase-js";
+
+// NextAuth User type
+export type User = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+};
 
 type UserSessionStore = {
   user: User | null;

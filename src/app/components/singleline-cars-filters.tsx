@@ -1,33 +1,30 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { QueryData, QueryError } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { StylesConfig } from "react-select";
 import AsyncSelect from "react-select/async";
 import { useTranslations } from "next-intl";
 import { useCarFiltersStore } from "@/stores/car-filters-store";
-import { Database, Tables } from "../../../types/supabase";
+import { Tables } from "../../../types/database.types";
 
 const SinglelineCars = () => {
   const t = useTranslations("index");
   const router = useRouter();
-  const supabase = createClientComponentClient<Database>();
   const setTitle = useCarFiltersStore((state) => state.setCarFilterTitle);
 
   const loadCars = async (input: string) => {
-    const query = supabase.from("Car").select("*").ilike("title", `%${input}%`);
-    const { data, error }: { data: QueryData<typeof query> | null; error: QueryError | null } = await query;
-
-    if (error) {
-      console.error(error);
+    try {
+      const response = await fetch(`/api/cars/search?q=${encodeURIComponent(input)}`);
+      if (!response.ok) {
+        console.error("Failed to search cars");
+        return [];
+      }
+      const data = await response.json();
+      return data.cars || [];
+    } catch (error) {
+      console.error("Error searching cars:", error);
+      return [];
     }
-
-    if (data && data.length > 0) {
-      return data;
-    }
-
-    return [];
   };
 
   const colourStyles: StylesConfig<Tables<"Car">> = {

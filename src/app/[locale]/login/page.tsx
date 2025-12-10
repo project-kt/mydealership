@@ -1,24 +1,19 @@
-import { AuthError, Session } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import { ReactElement } from "react";
-import supabaseServer from "@/supabase/config";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 import AuthForm from "./_components/auth-form";
 
 export default async function LoginPage(): Promise<ReactElement | undefined> {
-  const { data, error }: { data: { session: Session | null }; error: AuthError | null } =
-    await supabaseServer().auth.getSession();
+  const session = await getServerSession(authOptions);
 
-  if (error) {
-    console.error(error);
-  }
-
-  if (data.session) {
+  if (session) {
     redirect("/");
-  } else {
-    return (
-      <main>
-        <AuthForm />
-      </main>
-    );
   }
+
+  return (
+    <main>
+      <AuthForm />
+    </main>
+  );
 }

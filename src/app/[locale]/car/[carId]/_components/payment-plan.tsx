@@ -8,7 +8,7 @@ import { StripePaymentPlan } from "@/app/api/stripe/payment-plans/route";
 import { StripeCheckoutData } from "@/interfaces/stripe-checkout-data";
 import { useUserSessionStore } from "@/stores/session-store";
 import getStripe from "@/stripe/config";
-import { supabaseFn } from "@/utils/supabase-functions";
+import { dbFunctions } from "@/db/functions";
 import { Tables } from "../../../../../../types/database.types";
 
 type PaymentPlanProps = {
@@ -35,7 +35,7 @@ const PaymentPlan = ({ car, carOrder, paymentPlan }: PaymentPlanProps): ReactEle
         updatedAt: new Date().toISOString(),
       };
 
-      result = await supabaseFn.carOrder.update(fieldsToUpdate, car.carId, user!.id);
+      result = await dbFunctions.carOrder.update(fieldsToUpdate, car.carId, user!.id);
     } else {
       const newCarOrder: { carId: number; userId: string; price: number } & Partial<Tables<"CarOrder">> = {
         carId: car.carId,
@@ -45,7 +45,7 @@ const PaymentPlan = ({ car, carOrder, paymentPlan }: PaymentPlanProps): ReactEle
         expiredAt: null,
       };
 
-      result = await supabaseFn.carOrder.create(newCarOrder);
+      result = await dbFunctions.carOrder.create(newCarOrder);
     }
 
     if (result && result.length > 0) {

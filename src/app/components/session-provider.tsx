@@ -1,31 +1,12 @@
 "use client";
 
-import React, { ReactElement, useEffect } from "react";
-import { createClientComponentClient, Session } from "@supabase/auth-helpers-nextjs";
-import { AuthError } from "@supabase/supabase-js";
-import { useUserSessionStore } from "@/stores/session-store";
-import { Database } from "../../../types/supabase";
+import React, { ReactElement, ReactNode } from "react";
+import { SessionProvider as NextAuthSessionProvider } from "next-auth/react";
 
-export default function SessionProvider(): ReactElement {
-  const supabase = createClientComponentClient<Database>();
-  const setUser = useUserSessionStore((state) => state.setUser);
+interface SessionProviderProps {
+  children?: ReactNode;
+}
 
-  const readUserSession = async () => {
-    const { data, error }: { data: { session: Session | null }; error: AuthError | null } =
-      await supabase.auth.getSession();
-
-    if (error) {
-      console.error(error);
-    }
-
-    if (data && data.session) {
-      setUser(data.session.user);
-    }
-  };
-
-  useEffect(() => {
-    readUserSession();
-  }, []);
-
-  return <></>;
+export default function SessionProvider({ children }: SessionProviderProps): ReactElement {
+  return <NextAuthSessionProvider>{children}</NextAuthSessionProvider>;
 }

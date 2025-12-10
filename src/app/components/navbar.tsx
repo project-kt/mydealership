@@ -1,8 +1,6 @@
 "use client";
 
 import { Button, DropdownMenu, Heading } from "@radix-ui/themes";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,16 +8,9 @@ import { ReactElement } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useUserSessionStore } from "@/stores/session-store";
-import { Database } from "../../../types/supabase";
 import LanguageSelector from "./language-selector";
 
-type SupabaseClientProps = {
-  supabase: SupabaseClient;
-};
-
 export default function Navbar(): ReactElement {
-  const supabase = createClientComponentClient<Database>();
-
   return (
     <Disclosure as="nav" className="sticky top-0 z-50 mb-5  border-b bg-white">
       {({ open }: { open: boolean }) => (
@@ -45,7 +36,7 @@ export default function Navbar(): ReactElement {
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex gap-2">
-                    <NavigationMenu supabase={supabase} />
+                    <NavigationMenu />
                   </div>
                 </div>
               </div>
@@ -56,7 +47,7 @@ export default function Navbar(): ReactElement {
           </div>
           <Disclosure.Panel className="border-b bg-white  p-5 sm:hidden">
             <div className="flex flex-wrap gap-2">
-              <NavigationMenu supabase={supabase} />
+              <NavigationMenu />
             </div>
           </Disclosure.Panel>
         </>
@@ -74,7 +65,7 @@ const Logo = (): ReactElement => {
   );
 };
 
-const NavigationMenu = ({ supabase }: SupabaseClientProps): ReactElement => {
+const NavigationMenu = (): ReactElement => {
   const t = useTranslations("navbar");
   const user = useUserSessionStore((state) => state.user);
 
@@ -83,7 +74,7 @@ const NavigationMenu = ({ supabase }: SupabaseClientProps): ReactElement => {
       <>
         <MenuButton style="soft" link="/" title={t("menu.home")} />
         <MenuButton style="soft" link="/cars" title={t("menu.cars")} />
-        <ProfileButton supabase={supabase} />
+        <ProfileButton />
       </>
     );
   } else {
@@ -111,7 +102,7 @@ const MenuButton = ({ link, style, title }: MenuButtonProps): ReactElement => {
   );
 };
 
-const ProfileButton = ({ supabase }: SupabaseClientProps): ReactElement => {
+const ProfileButton = (): ReactElement => {
   const t = useTranslations("navbar");
 
   return (
@@ -125,30 +116,28 @@ const ProfileButton = ({ supabase }: SupabaseClientProps): ReactElement => {
         <DropdownMenu.Item>
           <Link href={"/orders"}>{t("menu.user.orders")}</Link>
         </DropdownMenu.Item>
-        <LogoutButton supabase={supabase} />
+        <LogoutButton />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );
 };
 
-const LogoutButton = ({ supabase }: SupabaseClientProps): ReactElement => {
+const LogoutButton = (): ReactElement => {
   const t = useTranslations("navbar");
   const router = useRouter();
   const setUser = useUserSessionStore((state) => state.setUser);
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      console.log(error);
-    }
-
+  const handleSignOut = async () => {
+    // Use NextAuth signOut
+    const { signOut } = await import("next-auth/react");
+    await signOut({ redirect: false });
     setUser(null);
+    router.push("/");
     router.refresh();
   };
 
   return (
-    <DropdownMenu.Item color="red" onClick={() => signOut()}>
+    <DropdownMenu.Item color="red" onClick={handleSignOut}>
       {t("menu.user.logout")}
     </DropdownMenu.Item>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUserSessionStore } from "@/stores/session-store";
-import { supabaseFn } from "@/utils/supabase-functions";
+import { dbFunctions } from "@/db/functions";
 import { Enums, Tables } from "../../types/database.types";
 
 export default function useCarOrders(carId?: number): Tables<"CarOrder">[] {
@@ -13,7 +13,7 @@ export default function useCarOrders(carId?: number): Tables<"CarOrder">[] {
 
   const getCarOrders = async () => {
     if (user) {
-      const carOrders = await supabaseFn.carOrder.get(carId, user.id);
+      const carOrders = await dbFunctions.carOrder.get(carId, user.id);
 
       if (carOrders && carOrders.length > 0) {
         setCarOrders(verifiedCarOrders(carOrders));
@@ -29,7 +29,7 @@ const verifiedCarOrders = (carOrders: Tables<"CarOrder">[]): Tables<"CarOrder">[
 
   const verifiedCarOrders = carOrders.map((carOrder: Tables<"CarOrder">) => {
     if (isCarOrderExpired(carOrder)) {
-      supabaseFn.carOrder.update(
+      dbFunctions.carOrder.update(
         {
           status: "expired",
         },

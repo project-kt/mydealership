@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { supabaseFn } from "@/utils/supabase-functions";
+import { dbFunctions } from "@/db/functions";
 import { Tables } from "../../../../../types/database.types";
 
 export const POST = async (req: Request) => {
@@ -8,7 +8,7 @@ export const POST = async (req: Request) => {
   const stripeSession = await retrieveStripeSession(reqData);
 
   if (stripeSession.id) {
-    const carPayment = await supabaseFn.payment.update(
+    const carPayment = await dbFunctions.payment.update(
       {
         expiredAt: new Date(stripeSession.expires_at * 1000).toISOString(),
         updatedAt: new Date().toISOString(),
@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
     );
 
     if (carPayment && carPayment.length > 0) {
-      const carOrder = await supabaseFn.carOrder.update(
+      const carOrder = await dbFunctions.carOrder.update(
         {
           expiredAt: new Date(stripeSession.expires_at * 1000).toISOString(),
           updatedAt: new Date().toISOString(),

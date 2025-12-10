@@ -1,17 +1,18 @@
-import { Provider } from "@supabase/supabase-js";
 import { RangeFiltersType } from "@/interfaces/range-filter-interface";
 import { Enums } from "../../types/database.types";
 
-export const EnabledProviders: Provider[] = ["github", "google"];
+// OAuth providers (currently disabled - see AUTH_SETUP.md to enable)
+export type Provider = "github" | "google";
+export const EnabledProviders: Provider[] = [];
 export const Providers = [
   {
-    key: "github",
+    key: "github" as Provider,
     name: "Github",
     url: "https://github.com/",
     icon: "/providers/github.png",
   },
   {
-    key: "google",
+    key: "google" as Provider,
     name: "Google",
     url: "https://google.com/",
     icon: "/providers/google.png",
