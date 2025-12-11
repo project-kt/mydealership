@@ -10,7 +10,9 @@
       "Bash(PGPASSWORD='ofjicdd1cdjrob1z' psql -h 51.210.105.182 -p 1234 -U postgres -d postgres -c 'SELECT COUNT(*) FROM \"\"Category\"\";')",
       "Bash(PGPASSWORD='ofjicdd1cdjrob1z' psql -h 51.210.105.182 -p 1234 -U postgres -d postgres -c 'SELECT COUNT(*) FROM \"\"Manufacturer\"\";')",
       "Bash(grep:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(npm run build:*)",
+      "Bash(PGPASSWORD='ofjicdd1cdjrob1z' psql -h 51.210.105.182 -p 1234 -U postgres -d postgres -c \"\\dt\")"
     ]
   }
 }

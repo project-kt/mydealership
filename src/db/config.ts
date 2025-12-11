@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from "pg";
+import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 
 // Create a connection pool
 const pool = new Pool({
@@ -18,7 +18,7 @@ pool.on("error", (err) => {
 export const db = pool;
 
 // Helper function to execute queries
-export async function query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+export async function query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
   const start = Date.now();
   const res = await pool.query<T>(text, params);
   const duration = Date.now() - start;

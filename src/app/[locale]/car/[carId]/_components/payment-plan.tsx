@@ -8,7 +8,6 @@ import { StripePaymentPlan } from "@/app/api/stripe/payment-plans/route";
 import { StripeCheckoutData } from "@/interfaces/stripe-checkout-data";
 import { useUserSessionStore } from "@/stores/session-store";
 import getStripe from "@/stripe/config";
-import { dbFunctions } from "@/db/functions";
 import { Tables } from "../../../../../../types/database.types";
 
 type PaymentPlanProps = {
@@ -35,7 +34,13 @@ const PaymentPlan = ({ car, carOrder, paymentPlan }: PaymentPlanProps): ReactEle
         updatedAt: new Date().toISOString(),
       };
 
-      result = await dbFunctions.carOrder.update(fieldsToUpdate, car.carId, user!.id);
+      const response = await axios.patch<Tables<"CarOrder">>("/api/car-orders", {
+        fieldsToUpdate,
+        carId: car.carId,
+        userId: user!.id,
+      });
+
+      result = response.data;
     } else {
       const newCarOrder: { carId: number; userId: string; price: number } & Partial<Tables<"CarOrder">> = {
         carId: car.carId,
@@ -45,12 +50,13 @@ const PaymentPlan = ({ car, carOrder, paymentPlan }: PaymentPlanProps): ReactEle
         expiredAt: null,
       };
 
-      result = await dbFunctions.carOrder.create(newCarOrder);
+      const response = await axios.post<Tables<"CarOrder">>("/api/car-orders", newCarOrder);
+      result = response.data;
     }
 
-    if (result && result.length > 0) {
+    if (result) {
       console.log("OPEN MODAL");
-      setNewCarOrder(result[0]);
+      setNewCarOrder(result);
       setIsOpen(true);
     }
   };

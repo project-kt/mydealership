@@ -1,5 +1,7 @@
 import { Stripe } from "stripe";
 
+export const dynamic = "force-dynamic";
+
 export type StripePaymentPlan = Stripe.Price & { product: Stripe.Product };
 
 export async function GET(): Promise<Response> {

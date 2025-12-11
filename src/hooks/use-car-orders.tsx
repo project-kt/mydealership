@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import { useUserSessionStore } from "@/stores/session-store";
-import { dbFunctions } from "@/db/functions";
 import { Enums, Tables } from "../../types/database.types";
 
 export default function useCarOrders(carId?: number): Tables<"CarOrder">[] {
@@ -13,10 +13,14 @@ export default function useCarOrders(carId?: number): Tables<"CarOrder">[] {
 
   const getCarOrders = async () => {
     if (user) {
-      const carOrders = await dbFunctions.carOrder.get(carId, user.id);
+      const params = new URLSearchParams();
+      if (carId) params.append("carId", carId.toString());
+      params.append("userId", user.id);
 
-      if (carOrders && carOrders.length > 0) {
-        setCarOrders(verifiedCarOrders(carOrders));
+      const response = await axios.get<Tables<"CarOrder">[]>(`/api/car-orders?${params.toString()}`);
+
+      if (response.data && response.data.length > 0) {
+        setCarOrders(verifiedCarOrders(response.data));
       }
     }
   };
@@ -29,13 +33,12 @@ const verifiedCarOrders = (carOrders: Tables<"CarOrder">[]): Tables<"CarOrder">[
 
   const verifiedCarOrders = carOrders.map((carOrder: Tables<"CarOrder">) => {
     if (isCarOrderExpired(carOrder)) {
-      dbFunctions.carOrder.update(
-        {
-          status: "expired",
-        },
-        carOrder.carId,
-        carOrder.userId,
-      );
+      // Update via API
+      axios.patch("/api/car-orders", {
+        fieldsToUpdate: { status: "expired" },
+        carId: carOrder.carId,
+        userId: carOrder.userId,
+      });
 
       return { ...carOrder, status: carStatus };
     }
